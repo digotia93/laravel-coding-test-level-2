@@ -13,14 +13,15 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $projects = Project::all()->latest();
+            $pageIndex = $request->pageIndex ?? 0;
+            $pageSize = $request->pageSize ?? 3;
+            $sortBy = $request->sortBy ?? 'name';
+            $sortDirection = $request->sortDirection ?? 'ASC';
 
-            if (!$projects) {
-                throw new \Exception();  
-            }
+            $projects = Partner::filter($request->all())->take($pageSize)->paginate($pageIndex)->orderBy($sortBy, $sortDirection)->get();
 
             // intend to display project index page
             // return view('projects.index', compact('projects'));
@@ -118,24 +119,11 @@ class ProjectController extends Controller
             if (!$project) {
                 throw new \Exception();  
             }
+
+            return view('projects.edit', compact('project')); 
         } catch(\Exception $e) {
             Session::flash('error', 'No project found.');
-            return redirect()->back()->withInput();
-        }
-
-        try {
-            $project->name = $input['name'];
-            $project->save();
-
-            if (!$project) {
-                throw new \Exception();  
-            }
-
-            // intend to display project edit page
-            // return view('projects.edit', compact('project'));
-        } catch(\Exception $e) {
-            Session::flash('error', 'Encountered error while tried to update project details.');
-            return redirect()->back()->withInput();
+            return redirect()->route('projects.index');
         }
     }
 

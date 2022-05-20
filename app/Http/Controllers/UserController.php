@@ -15,11 +15,7 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $users = User::all()->latest();
-
-            if (!$users) {
-                throw new \Exception();  
-            }
+            $users = User::latest();
 
             // intend to display user index page
             // return view('users.index', compact('users'));

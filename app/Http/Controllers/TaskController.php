@@ -19,16 +19,12 @@ class TaskController extends Controller
     public function index()
     {
         try {
-            $tasks = Task::all()->latest();
+            $tasks = Task::latest();
 
-            if (!$tasks) {
-                throw new \Exception();  
-            }
-
-            // intend to display user index page
+            // intend to display task index page
             // return view('tasks.index', compact('tasks'));
         } catch(\Exception $e) {
-            Session::flash('error', 'Encountered error while tried to retrieve user list.');
+            Session::flash('error', 'Encountered error while tried to retrieve task list.');
             return redirect()->route('home');
         }
     }
@@ -71,6 +67,10 @@ class TaskController extends Controller
             $task->project_id = $input['project'];
             $task->user_id = $input['user'];
             $task->save();
+
+            if (!$task) {
+                throw new \Exception();  
+            }
 
             Session::flash('success', 'Task has been created successfully.');
             return redirect()->route('tasks.show', $task->id);
@@ -116,7 +116,7 @@ class TaskController extends Controller
 
             if (!$task) {
                 throw new \Exception();  
-            }          
+            }
 
             $users = User::orderBy('name', 'ASC')->get();
             $projects = Project::orderBy('name', 'ASC')->get();
@@ -148,7 +148,7 @@ class TaskController extends Controller
             }
         } catch(\Exception $e) {
             Session::flash('error', 'No task found.');
-            return redirect()->back()->withInput();
+            return redirect()->route('tasks.index');
         }
 
         try {
