@@ -46,7 +46,7 @@ class TaskController extends Controller
         $projects = Project::orderBy('name', 'ASC')->get();
 
         // intend to display task create page
-        return view('tasks.create', compact('users', 'projects')); 
+        // return view('tasks.create', compact('users', 'projects')); 
     }
 
     /**
@@ -73,7 +73,7 @@ class TaskController extends Controller
             $task->save();
 
             Session::flash('success', 'Task has been created successfully.');
-            return redirect()->route('tasks.edit');
+            return redirect()->route('tasks.show', $task->id);
         } catch(\Exception $e) {
             Session::flash('error', 'Encountered error while tried to create task.');
             return redirect()->back()->withInput();
@@ -96,7 +96,7 @@ class TaskController extends Controller
             }
 
             // intend to display task show page
-            // return view('tasks.show');
+            // return view('tasks.show', compact('task'));
         } catch(\Exception $e) {
             Session::flash('error', 'Encountered error while tried to retrieve task details.');
             return redirect()->route('tasks.index');
@@ -118,8 +118,11 @@ class TaskController extends Controller
                 throw new \Exception();  
             }          
 
+            $users = User::orderBy('name', 'ASC')->get();
+            $projects = Project::orderBy('name', 'ASC')->get();
+
             // intend to display task edit page
-            // return view('tasks.edit');
+            // return view('tasks.edit', compact('task', 'users', 'projects'));
         } catch(\Exception $e) {
             Session::flash('error', 'Encountered error while tried to retrieve task details.');
             return redirect()->route('tasks.index');
@@ -171,7 +174,7 @@ class TaskController extends Controller
             }
 
             Session::flash('success', 'Task has been updated successfully.');
-            return redirect()->route('tasks.show');
+            return redirect()->route('tasks.show', $task->id);
         } catch(\Exception $e) {
             Session::flash('error', 'Encountered error while tried to update task details.');
             return redirect()->back()->withInput();

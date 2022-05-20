@@ -36,7 +36,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+       return redirect()->view('users.create');
     }
 
     /**
@@ -45,9 +45,27 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AddUserRequest $request)
     {
-        //
+        $input = $request->all();
+
+        try {
+            $user = new User();
+            $user->username = $input['username'];
+            $user->password = Hash::make($input['password']);
+            $user->type = $input['type'];
+            $user->save();
+
+            if (!$user) {
+                throw new \Exception();  
+            }
+
+            // intend to display user create page
+            // return view('users.create');
+        } catch(\Exception $e) {
+            Session::flash('error', 'Encountered error while tried to create user.');
+            return redirect()->back()->withInput();
+        }
     }
 
     /**
@@ -66,7 +84,7 @@ class UserController extends Controller
             }
 
             // intend to display user show page
-            // return view('users.show');
+            // return view('users.show', compact('user'));
         } catch(\Exception $e) {
             Session::flash('error', 'Encountered error while tried to retrieve user details.');
             return redirect()->route('users.index');

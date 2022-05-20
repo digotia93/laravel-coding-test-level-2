@@ -67,8 +67,12 @@ class ProjectController extends Controller
                 throw new \Exception(); 
             }
 
+            // NOTE: Creating a project and assign 2 users to it.
+            // seems no users column requested in project table, hardly could assign users to a project,
+            // therefore so would be determined by tasks assign according to project
+
             Session::flash('success', 'Project has been created successfully.');
-            return redirect()->route('projects.edit');
+            return redirect()->route('projects.show', $project->id);
         } catch(\Exception $e) {
             Session::flash('error', 'Encountered error while tried to create project.');
             return redirect()->back()->withInput();
@@ -91,7 +95,7 @@ class ProjectController extends Controller
             }
 
             // intend to display project show page
-            // return view('projects.show');
+            // return view('projects.show', compact('project'));
         } catch(\Exception $e) {
             Session::flash('error', 'Encountered error while tried to retrieve project details.');
             return redirect()->route('projects.index');
@@ -127,8 +131,8 @@ class ProjectController extends Controller
                 throw new \Exception();  
             }
 
-            Session::flash('success', 'Project has been updated successfully.');
-            return redirect()->route('projects.show');
+            // intend to display project edit page
+            // return view('projects.edit', compact('project'));
         } catch(\Exception $e) {
             Session::flash('error', 'Encountered error while tried to update project details.');
             return redirect()->back()->withInput();
@@ -142,9 +146,31 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(EditProjectRequest $request, $id)
     {
-        //
+        // get input
+        $input = $request->all();
+
+        try {
+            $project = Project::find($id);
+
+            if (!$project) {
+                throw new \Exception(); 
+            }
+
+            $project->name = $input['name'];
+            $project->save();
+
+            if (!$project) {
+                throw new \Exception(); 
+            }
+
+            Session::flash('success', 'Project has been updated successfully.');
+            return redirect()->route('projects.show', $project->id);
+        } catch(\Exception $e) {
+            Session::flash('error', 'Encountered error while tried to update project.');
+            return redirect()->back()->withInput();
+        }
     }
 
     /**
