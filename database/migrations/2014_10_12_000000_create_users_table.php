@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->uuid('id')->primary();
             $table->string('username')->unique();
             $table->string('password');
+            $table->tinyInteger('type')->default(0);
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();
         });

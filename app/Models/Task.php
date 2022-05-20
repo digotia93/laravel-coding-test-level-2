@@ -12,6 +12,11 @@ class Task extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const NOT_STARTED       = 'NOT STARTED';
+    const IN_PROGRESS       = 'IN PROGRESS';
+    const READY_FOR_TEST    = 'READY FOR TEST';
+    const COMPLETED         = 'COMPLETED';
+
     public function project()
     {
         return $this->belongsTo(Project::class);

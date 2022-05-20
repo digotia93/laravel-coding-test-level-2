@@ -19,8 +19,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::group(['prefix' => 'v1'], function () {   
-    Route::resource("users", "UserController");
-    Route::resource("projects", "ProjectController");
+    Route::resource("users", "UserController")->middleware("checkIsAdmin");
+    Route::resource("projects", "ProjectController")->middleware("checkIsProductOwner");
     Route::resource("tasks", "TaskController");
 });
 
