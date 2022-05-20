@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+class CreateProjectsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,14 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            // charset and collation
+        Schema::create('projects', function (Blueprint $table) {
+             // charset and collation
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_ci';
             
             // columns
             $table->uuid('id')->primary();
-            $table->string('username')->unique();
-            $table->string('password');
+            $table->string('name')->unique();
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();
         });
@@ -34,6 +33,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('projects');
     }
 }
