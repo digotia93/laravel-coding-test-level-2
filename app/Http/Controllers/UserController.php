@@ -32,7 +32,7 @@ class UserController extends Controller
      */
     public function create()
     {
-       return redirect()->view('users.create');
+       return view('users.create');
     }
 
     /**
